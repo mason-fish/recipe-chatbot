@@ -1,0 +1,36 @@
+build:
+  recipe-chatbot:
+    context: .
+    dockerfile: Dockerfile
+
+deploy:
+  - name: Deploy Recipe Chatbot
+    command: |
+      envsubst < k8s.yml | kubectl apply -f -
+
+dev:
+  recipe-chatbot:
+    image: ${OKTETO_BUILD_RECIPE_CHATBOT_IMAGE}
+    command: bash
+    workdir: /app
+    sync:
+      - .:/app
+    forward:
+      - 8000:8000
+    environment:
+      - MODEL_NAME=${MODEL_NAME:-openai/gpt-4o-mini}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - TOGETHER_API_KEY=${TOGETHER_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+
+test:
+  unit:
+    image: ${OKTETO_BUILD_RECIPE_CHATBOT_IMAGE}
+    commands:
+      - echo "Running basic health check..."
+      - python -c "from backend.main import app; print('FastAPI app imported successfully')"
+      - echo "Testing requirements installation..."
+      - python -c "import fastapi, uvicorn, litellm; print('Core dependencies available')"
+      - echo "Testing health endpoint..."
+      - python -c "from fastapi.testclient import TestClient; from backend.main import app; client = TestClient(app); response = client.get('/health'); assert response.status_code == 200; print('Health endpoint working')"
