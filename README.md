@@ -25,6 +25,24 @@ This repository contains a complete AI evaluations course built around a Recipe 
    # Open http://127.0.0.1:8000
    ```
 
+## Deploy on Okteto
+
+For cloud deployment on Okteto:
+
+1. **Quick Deploy**
+   ```bash
+   cp .env.okteto .env
+   # Edit .env and add your API keys
+   okteto deploy --wait
+   ```
+
+2. **Access your app**
+   ```bash
+   okteto endpoints
+   ```
+
+See [OKTETO_DEPLOYMENT.md](OKTETO_DEPLOYMENT.md) for detailed deployment instructions.
+
 ## Course Overview
 
 ### Homework Progression

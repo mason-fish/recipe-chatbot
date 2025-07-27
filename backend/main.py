@@ -86,6 +86,12 @@ async def chat_endpoint(payload: ChatRequest) -> ChatResponse:  # noqa: WPS430
     return response
 
 
+@app.get("/health")
+async def health_check() -> Dict[str, str]:
+    """Health check endpoint for Kubernetes probes."""
+    return {"status": "healthy", "service": "recipe-chatbot"}
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index() -> HTMLResponse:  # noqa: WPS430
     """Serve the chat UI."""
